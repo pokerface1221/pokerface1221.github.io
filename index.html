@@ -123,12 +123,10 @@
     								</tbody>
   							       </table>
 							      </div>
-								<h3 class="major">遇到的問題</h3>
-								<p style="color=white">遇到的問題</p>
-								<p>在爬取 Net網站中襯衫的商品價格時，雖然能夠成功抓取商品名稱與連結，但價格資料卻抓取失敗。<br>分析網頁結構後發現，發現價格並非與標題在同一個區塊中。</p>
-								<p>因此，我去詢問了同學並結合chatgpt。</p>
-								<p>發現要同時遍歷「.searchTitle」與「.searchList」區塊，再透過 XPath「.//tr[3]/td」擷取價格。</p>
-								<p>但因該網站價格為「JavaScript」動態載入，需等待頁面完全載入，否則價格欄位會抓不到。</p>
+								<br><h3 class="major">遇到的問題</h3>
+								<p>在爬取 Net網站中襯衫的商品價格時，雖然能夠成功抓取商品名稱與連結，但價格資料卻抓取失敗。分析網頁結構後發現，發現價格並非與標題在同一個區塊中。<br>
+								因此，我去詢問了同學並結合chatgpt。發現要同時遍歷「.searchTitle」與「.searchList」區塊，<br>再透過 XPath「.//tr[3]/td」擷取價格。
+								但因該網站價格為「JavaScript 動態載入」，需等待頁面完全載入，否則價格欄位會抓不到。</p>
 								資料來源 : <a href="https://www.net-fashion.net/search?keyword=%E8%A5%AF%E8%A1%AB" rel="nofollow">NET</a>
 							</article>
 						
