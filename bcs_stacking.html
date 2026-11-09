@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BCS-Stacking 研究海報｜平衡兩分類資料之續貫(垂直)堆疊整合學習演算法</title>
+<style>
+:root{--bg:#faf8f3;--card:#fffef5;--card2:#fef9e7;--text:#3d2817;--mute:#78716c;--acc:#d97706;--acc2:#ea580c;--warn:#dc2626;--line:rgba(139,92,42,0.1)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:"Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.8}
+a{color:inherit;text-decoration:none}
+nav{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(250,248,243,.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+nav .in{max-width:1100px;margin:auto;display:flex;justify-content:space-between;align-items:center;padding:12px 20px}
+nav b{color:var(--acc)}
+nav ul{display:flex;gap:20px;list-style:none;font-size:14px;flex-wrap:wrap}
+nav ul a{color:var(--mute)}nav ul a:hover{color:var(--acc)}
+section{max-width:1100px;margin:auto;padding:90px 20px 30px}
+h2{font-size:30px;margin-bottom:6px}
+h2 span{color:var(--acc)}
+.sub{color:var(--mute);margin-bottom:28px}
+.hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:120px 20px 60px;
+background:radial-gradient(circle at 20% 20%,rgba(252,211,77,.3),transparent 45%),radial-gradient(circle at 80% 70%,rgba(245,158,11,.25),transparent 45%)}
+.tag{border:1px solid var(--acc);color:var(--acc);padding:4px 14px;border-radius:99px;font-size:13px;letter-spacing:2px}
+.hero h1{font-size:clamp(28px,5vw,52px);margin:20px 0 6px;background:linear-gradient(90deg,#d97706,#ea580c);-webkit-background-clip:text;color:transparent;line-height:1.3}
+.hero .en{color:var(--mute);font-size:16px;margin-bottom:24px}
+.hero p{color:var(--mute)}
+.stats{display:flex;gap:18px;margin-top:40px;flex-wrap:wrap;justify-content:center}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 30px}
+.stat b{display:block;font-size:36px;color:var(--acc)}
+.stat small{color:var(--mute)}
+.grid{display:grid;gap:18px;grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px}
+.card h3{color:var(--acc);margin-bottom:8px}
+.card p,.card li{color:#5a4a3a}
+.card ul{padding-left:20px}
+.flow{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch}
+.step{flex:1 1 160px;background:var(--card2);border:1px solid var(--line);border-radius:14px;padding:16px;position:relative}
+.step i{font-style:normal;color:var(--acc2);font-weight:700;font-size:12px;letter-spacing:2px}
+.step h4{margin:4px 0}
+.step p{font-size:13px;color:var(--mute);line-height:1.6}
+.tag2{display:inline-block;background:#fef3c7;border:1px solid var(--line);border-radius:8px;padding:2px 10px;margin:3px;font-size:13px;color:#92400e}
+.tw{overflow-x:auto;border:1px solid var(--line);border-radius:16px}
+table{border-collapse:collapse;width:100%;min-width:980px;font-size:14px}
+th,td{padding:12px 10px;border-bottom:1px solid var(--line);text-align:center}
+th{background:var(--card2);color:var(--acc);white-space:nowrap}
+td:first-child,td:nth-child(2){text-align:left}
+td.best{background:rgba(252,211,77,.3);color:#92400e;font-weight:700}
+.arch{font-size:12px;color:var(--mute)}
+.tabs{display:flex;gap:8px;margin:28px 0 16px;flex-wrap:wrap}
+.tabs button{background:var(--card);color:var(--mute);border:1px solid var(--line);padding:8px 16px;border-radius:99px;cursor:pointer;font-size:14px}
+.tabs button.on{background:var(--acc);color:#fff;font-weight:700;border-color:var(--acc)}
+.bars .row{display:grid;grid-template-columns:180px 1fr 80px;gap:10px;align-items:center;margin:10px 0;font-size:14px}
+.bars .track{background:#fef3c7;border-radius:99px;height:18px;overflow:hidden}
+.bars .fill{height:100%;border-radius:99px;background:linear-gradient(90deg,#ea580c,#d97706);width:0;transition:width .8s}
+.bars .best .fill{background:linear-gradient(90deg,#d97706,#fcd34d)}
+.bars .best span:last-child{color:#92400e;font-weight:700}
+.insight li{margin:8px 0}
+.team{display:flex;flex-wrap:wrap;gap:10px}
+.team span{background:var(--card2);border:1px solid var(--line);border-radius:99px;padding:6px 18px}
+.note{font-size:13px;color:var(--warn);margin-top:10px}
+footer{text-align:center;color:var(--mute);padding:60px 20px;font-size:14px}
+.reveal{opacity:0;transform:translateY(24px);transition:.7s}
+.reveal.show{opacity:1;transform:none}
+@media(max-width:700px){nav ul{display:none}.bars .row{grid-template-columns:110px 1fr 70px}}
+
+/* 參考文獻 */
+.references{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:24px}
+.references ol{padding-left:28px;color:#5a4a3a}
+.references li{padding-left:8px;line-height:2}
+.references a{color:var(--acc);text-decoration:underline;overflow-wrap:anywhere}
+.references a:hover{color:var(--acc2)}
+
+/* 六個主要導覽區塊的階層 */
+section.subsection{padding-top:22px;padding-bottom:12px}
+section.subsection>h3{font-size:22px;color:var(--acc);margin:0 0 6px;padding-left:14px;border-left:4px solid var(--acc)}
+section.subsection>.sub{margin-bottom:18px}
+@media(max-width:680px){
+  nav .in{align-items:flex-start;gap:8px}
+  nav ul{gap:10px;font-size:12px}
+  section.subsection{padding-top:18px}
+}
+
+.references h3{color:var(--acc2);font-size:18px;margin:18px 0 8px}
+.references h3:first-child{margin-top:0}
+.references ol{margin-bottom:14px}
+.reference-note{margin-top:18px;padding-top:14px;border-top:1px solid var(--line);font-size:13px;color:var(--mute)}
+</style>
+</head>
+<body>
+<nav><div class="in"><b>BCS-Stacking</b>
+<ul>
+  <li><a href="#abstract">首頁</a></li>
+  <li><a href="#data">數據與流程</a></li>
+  <li><a href="#method">核心方法論</a></li>
+  <li><a href="#flow">研究流程</a></li>
+  <li><a href="#conclusion">總結</a></li>
+  <li><a href="#references">文獻脈絡</a></li>
+</ul></div></nav>
+
+<header class="hero">
+  <span class="tag">2026 資科系成果展 POSTER SESSION</span>
+  <h1>平衡兩分類資料之續貫（垂直）堆疊整合學習演算法</h1>
+  <div class="en">BCS-Stacking: Vertical Sequential Stacking for Balanced Binary Classification</div>
+  <p>指導教授：李名鏞 教授</p>
+  <p>專題成員：羅蔚妮</p>
+  <div class="stats">
+    <div class="stat"><b data-n="4898" data-f="1">0</b><small>筆樣本</small></div>
+    <div class="stat"><b data-n="16">0</b><small>種基礎模型</small></div>
+    <div class="stat"><b data-n="4">0</b><small>種堆疊策略</small></div>
+    <div class="stat"><b data-n="0.4870" data-f="4">0</b><small>最佳 MCC</small></div>
+  </div>
+</header>
+
+<section id="abstract" class="reveal">
+  <h2><span>01</span> 首頁</h2><p class="sub">研究核心概念與整體方向</p>
+  <div class="grid">
+    <div class="card"><h3>📋 研究內容</h3><p>本研究提出一種新型態的垂直堆疊整合學習框架，針對平衡二分類資料，透過雙門檻機制（θ₁, θ₂）將樣本劃分為確定區與難分類區（Λ），並結合多層順序堆疊策略，有效提升分類準確率與模型穩定性。</p></div>
+    <div class="card"><h3>✨ 核心貢獻</h3><ul><li>提出<b>雙門檻決策機制</b></li><li>整合 <b>16 種基礎模型</b></li><li>發展 <b>4 種堆疊策略</b></li><li>在多項指標上超越傳統方法</li></ul></div>
+  </div>
+</section>
+
+<section id="motivation" class="reveal subsection">
+  <h3>研究動機</h3><p class="sub">傳統堆疊方法的三大限制</p>
+  <div class="grid">
+    <div class="card"><h3>⚠️ 機率加權的模糊性</h3><p>水平堆疊忽略模型在不同樣本上的確定性差異</p></div>
+    <div class="card"><h3>⚠️ 缺乏順序性</h3><p>未考慮基礎模型的強弱順序與互補關係</p></div>
+    <div class="card"><h3>⚠️ 難分類樣本處理不足</h3><p>對邊界樣本缺乏針對性策略</p></div>
+  </div>
+  <p style="margin-top:20px;color:var(--mute);text-align:center">本研究旨在發展一套能動態識別難分類樣本，並依序調用不同模型專精處理的整合框架。</p>
+</section>
+
+<section id="data" class="reveal">
+  <h2><span>02</span> 數據與流程</h2><p class="sub">UCI White Wine Quality Dataset</p>
+  <div class="grid">
+    <div class="card"><h3>📦 資料概況</h3>
+      <ul>
+        <li>樣本數：<b style="color:var(--acc)">4,898</b> 筆</li>
+        <li>特徵數：<b style="color:var(--acc)">11</b> 項理化指標</li>
+        <li>類別分布：
+          <ul>
+            <li>Class 0（普通）：1,640 筆 (33.48%)</li>
+            <li>Class 1（優質）：3,258 筆 (66.52%)</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+    <div class="card"><h3>🧪 特徵欄位</h3>
+      <p>
+        <span class="tag2">固定酸度</span><span class="tag2">揮發性酸度</span><span class="tag2">檸檬酸</span><span class="tag2">殘糖量</span><span class="tag2">氯化物</span><span class="tag2">游離二氧化硫</span><span class="tag2">總二氧化硫</span><span class="tag2">密度</span><span class="tag2">酸鹼值</span><span class="tag2">硝酸鹽</span><span class="tag2">酒精濃度</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<section id="method" class="reveal">
+  <h2><span>03</span> 核心方法論</h2><p class="sub">基礎模型與堆疊策略</p>
+  <div class="grid">
+    <div class="card"><h3>🔧 16 種基礎模型</h3>
+      <ul>
+        <li><b>樹模型</b>：Random Forest, Extra Trees, Decision Tree, Pruned Tree</li>
+        <li><b>Boosting</b>：XGBoost, LightGBM, CatBoost, AdaBoost, Gradient Boosting</li>
+        <li><b>線性模型</b>：Logistic Regression (L1/L2), ElasticNet, Linear SVM</li>
+        <li><b>其他</b>：KNN, Naive Bayes</li>
+      </ul>
+    </div>
+    <div class="card"><h3>📊 4 種堆疊策略</h3>
+      <ol style="padding-left:20px">
+        <li>完全自動搜索（80% 純度門檻）</li>
+        <li>個別模型設定純度</li>
+        <li>手動指定門檻</li>
+        <li>邏輯斯堆疊整合法</li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section id="flow" class="reveal">
+  <h2><span>04</span> 研究流程</h2><p class="sub">完整研究流程六步驟</p>
+  <div class="flow">
+    <div class="step"><i>STEP 01</i><h4>資料前處理</h4><p>清洗、標準化、特徵選取</p></div>
+    <div class="step"><i>STEP 02</i><h4>特徵工程</h4><p>衍生新特徵、交互項</p></div>
+    <div class="step"><i>STEP 03</i><h4>16 模型訓練</h4><p>訓練所有基礎學習器</p></div>
+    <div class="step"><i>STEP 04</i><h4>AUC 篩選</h4><p>依 ROC-AUC 挑選表現佳的模型</p></div>
+    <div class="step"><i>STEP 05</i><h4>門檻設定</h4><p>設定 θ₁, θ₂ 與純度門檻</p></div>
+    <div class="step"><i>STEP 06</i><h4>順序堆疊</h4><p>垂直串接、難分類樣本依序處理</p></div>
+  </div>
+</section>
+
+<section id="threshold" class="reveal subsection">
+  <h3>雙門檻機制</h3><p class="sub">核心創新：將樣本分為三區</p>
+  <div class="grid">
+    <div class="card" style="grid-column:1/-1">
+      <svg viewBox="0 0 800 240" style="width:100%;height:auto">
+        <!-- 預測機率軸 -->
+        <defs>
+          <linearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:#fef3c7"/>
+            <stop offset="40%" style="stop-color:#fef3c7"/>
+            <stop offset="40%" style="stop-color:#fde68a"/>
+            <stop offset="60%" style="stop-color:#fde68a"/>
+            <stop offset="60%" style="stop-color:#fef3c7"/>
+            <stop offset="100%" style="stop-color:#fef3c7"/>
+          </linearGradient>
+        </defs>
+        <!-- 背景區域 -->
+        <rect x="100" y="60" width="240" height="100" fill="#d1fae5" opacity="0.5"/>
+        <rect x="340" y="60" width="120" height="100" fill="#fde68a" opacity="0.5"/>
+        <rect x="460" y="60" width="240" height="100" fill="#fee2e2" opacity="0.5"/>
+        <!-- 分布曲線 -->
+        <path d="M 100 160 Q 180 40, 240 80 T 340 100 T 460 90 Q 560 40, 700 160" fill="url(#grad1)" stroke="#d97706" stroke-width="2"/>
+        <!-- 門檻線 -->
+        <line x1="340" y1="40" x2="340" y2="180" stroke="#ea580c" stroke-width="3" stroke-dasharray="6,4"/>
+        <line x1="460" y1="40" x2="460" y2="180" stroke="#ea580c" stroke-width="3" stroke-dasharray="6,4"/>
+        <!-- 標籤 -->
+        <text x="220" y="30" text-anchor="middle" font-size="18" font-weight="bold" fill="#16a34a">Class 0</text>
+        <text x="220" y="52" text-anchor="middle" font-size="13" fill="#78716c">f(x) ≤ θ₁</text>
+        <text x="400" y="30" text-anchor="middle" font-size="18" font-weight="bold" fill="#d97706">Λ (難分類)</text>
+        <text x="400" y="52" text-anchor="middle" font-size="13" fill="#78716c">θ₁ &lt; f(x) &lt; θ₂</text>
+        <text x="580" y="30" text-anchor="middle" font-size="18" font-weight="bold" fill="#dc2626">Class 1</text>
+        <text x="580" y="52" text-anchor="middle" font-size="13" fill="#78716c">f(x) ≥ θ₂</text>
+        <!-- 軸標籤 -->
+        <text x="340" y="200" text-anchor="middle" font-size="14" fill="#ea580c" font-weight="bold">θ₁</text>
+        <text x="460" y="200" text-anchor="middle" font-size="14" fill="#ea580c" font-weight="bold">θ₂</text>
+        <text x="400" y="225" text-anchor="middle" font-size="14" fill="#78716c">預測機率 f(x)</text>
+      </svg>
+      <p style="margin-top:16px;color:var(--mute);text-align:center">透過雙門檻將預測空間分為三區，針對難分類樣本（Λ）調用專精模型處理。</p>
+    </div>
+  </div>
+</section>
+
+<section id="models" class="reveal subsection">
+  <h3>16 種基礎模型</h3><p class="sub">ROC-AUC 表現比較</p>
+  <div class="grid">
+    <div class="card">
+      <h3>🏆 Top 3 模型</h3>
+      <ul>
+        <li><b>XGBoost</b>: ROC-AUC <span style="color:var(--acc);font-weight:700">0.8157</span></li>
+        <li><b>LightGBM</b>: ROC-AUC <span style="color:var(--acc);font-weight:700">0.8154</span></li>
+        <li><b>KNN</b>: ROC-AUC <span style="color:var(--acc);font-weight:700">0.8134</span></li>
+      </ul>
+      <p class="note">其他表現佳：Random Forest (0.8129)、CatBoost (0.8117)、Gradient Boosting (0.8081)</p>
+    </div>
+    <div class="card">
+      <h3>📊 16 模型完整排名</h3>
+      <div class="bars" id="modelBars"></div>
+    </div>
+  </div>
+</section>
+
+<section id="results" class="reveal subsection">
+  <h3>堆疊方法比較</h3><p class="sub">四種堆疊策略效能對比</p>
+  <div class="tw"><table id="tbl">
+    <thead><tr><th>方法</th><th>堆疊架構</th><th>覆蓋率</th><th>Test Acc</th><th>Balanced Acc</th><th>Recall</th><th>F1</th><th>ROC-AUC</th><th>PR-AUC</th><th>MCC</th></tr></thead>
+    <tbody></tbody></table></div>
+
+  <div class="tabs" id="tabs"></div>
+  <div class="card bars" id="bars"></div>
+
+  <div class="card insight" style="margin-top:18px"><h3>📌 觀察重點</h3>
+    <ul>
+      <li><b>方式二（個別門檻）</b>在 Balanced Accuracy、ROC-AUC、PR-AUC、MCC 四項最佳。</li>
+      <li><b>方式一（80% 純度）</b>Recall 高達 94.26%，適合重視不漏判的情境。</li>
+      <li><b>邏輯斯回歸</b>確保 100% 覆蓋率，適合實務應用。</li>
+    </ul>
+  </div>
+</section>
+
+<section id="insights" class="reveal subsection">
+  <h3>關鍵發現</h3><p class="sub">四大核心貢獻</p>
+  <div class="grid">
+    <div class="card">
+      <h3>💡 1. 雙門檻機制有效性</h3>
+      <p>能成功識別 <b style="color:var(--acc)">9.71%–54.22%</b> 的難分類樣本，並針對性處理。</p>
+    </div>
+    <div class="card">
+      <h3>💡 2. 順序堆疊優勢</h3>
+      <p>方式二 MCC 達 <b style="color:var(--acc)">0.4870</b>，較最佳單模型（LightGBM 0.4806）提升 <b style="color:var(--acc)">1.33%</b>。</p>
+    </div>
+    <div class="card">
+      <h3>💡 3. 覆蓋率與效能權衡</h3>
+      <p>方式二覆蓋率僅 <b style="color:var(--acc)">45.78%</b>，但準確率最高，顯示「少而精」策略有效。</p>
+    </div>
+    <div class="card">
+      <h3>💡 4. 邏輯斯回歸穩定性</h3>
+      <p>雖 MCC 略低，但 <b style="color:var(--acc)">100% 覆蓋率</b>確保所有樣本皆被分類，適合實務應用。</p>
+    </div>
+  </div>
+</section>
+
+<section id="conclusion" class="reveal">
+  <h2><span>05</span> 總結</h2><p class="sub">研究貢獻與延伸方向</p>
+  <div class="grid">
+    <div class="card"><h3>🎓 研究貢獻</h3>
+      <ul>
+        <li>提出垂直堆疊框架，突破傳統水平堆疊限制</li>
+        <li>發展雙門檻機制，有效處理邊界樣本</li>
+        <li>整合 16 模型，系統性比較堆疊策略</li>
+        <li>在多項指標上超越單一最佳模型</li>
+      </ul>
+    </div>
+    <div class="card"><h3>🚀 未來方向</h3>
+      <ul>
+        <li>多類別分類擴展</li>
+        <li>高度不平衡資料處理（SMOTE 整合）</li>
+        <li>深度學習模型納入堆疊</li>
+        <li>動態門檻調整機制</li>
+        <li>多資料集驗證泛化能力</li>
+        <li>統計模擬比較理論性質</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="references" class="reveal">
+  <h2><span>06</span> 文獻脈絡</h2><p class="sub">平衡二分類、續貫堆疊整合學習與葡萄酒品質預測相關研究</p>
+  <div class="references">
+    <h3>一、堆疊整合與不平衡二分類</h3>
+    <ol>
+      <li>Wolpert, D. H. (1992). Stacked generalization. <u>Neural Networks, 5(2)</u>, 241-259. doi: <a href="https://doi.org/10.1016/S0893-6080(05)80023-1" target="_blank" rel="noopener noreferrer">10.1016/S0893-6080(05)80023-1</a>.</li>
+      <li>He, H. &amp; Garcia, E. A. (2009). Learning from imbalanced data. <u>IEEE Transactions on Knowledge and Data Engineering, 21(9)</u>, 1263-1284. doi: <a href="https://doi.org/10.1109/TKDE.2008.239" target="_blank" rel="noopener noreferrer">10.1109/TKDE.2008.239</a>.</li>
+      <li>Chawla, N. V., Bowyer, K. W., Hall, L. O. &amp; Kegelmeyer, W. P. (2002). SMOTE: Synthetic minority over-sampling technique. <u>Journal of Artificial Intelligence Research, 16</u>, 321-357. doi: <a href="https://doi.org/10.1613/jair.953" target="_blank" rel="noopener noreferrer">10.1613/jair.953</a>.</li>
+      <li>Powers, D. M. W. (2011). Evaluation: From precision, recall and F-measure to ROC, informedness, markedness &amp; correlation. <u>Journal of Machine Learning Technologies, 2(1)</u>, 37-63. 2026年11月9日，取自：<a href="https://bioinfopublication.org/files/articles/2_1_1_JMLT.pdf" target="_blank" rel="noopener noreferrer">https://bioinfopublication.org/files/articles/2_1_1_JMLT.pdf</a>.</li>
+    </ol>
+
+    <h3>二、葡萄酒品質與資料集</h3>
+    <ol start="5">
+      <li>Cortez, P., Cerdeira, A., Almeida, F., Matos, T. &amp; Reis, J. (2009). Modeling wine preferences by data mining from physicochemical properties. <u>Decision Support Systems, 47(4)</u>, 547-553. doi: <a href="https://doi.org/10.1016/j.dss.2009.05.016" target="_blank" rel="noopener noreferrer">10.1016/j.dss.2009.05.016</a>.</li>
+      <li>UCI Machine Learning Repository (無日期). Wine Quality [資料集]. University of California, Irvine. 2026年11月9日，取自：<a href="https://archive.ics.uci.edu/dataset/186/wine+quality" target="_blank" rel="noopener noreferrer">https://archive.ics.uci.edu/dataset/186/wine+quality</a>.</li>
+      <li>Hu, G., Xi, T. &amp; Miao, H. (2016). Classification of wine quality with imbalanced data. <u>International Conference on Machine Learning and Cybernetics</u>. 2026年11月9日，取自：<a href="https://www.semanticscholar.org/paper/Classification-of-wine-quality-with-imbalanced-data-Hu-Xi/eac93851a921c77526d3d3bf6cfbcc078a742cdd" target="_blank" rel="noopener noreferrer">https://www.semanticscholar.org/paper/Classification-of-wine-quality-with-imbalanced-data-Hu-Xi/eac93851a921c77526d3d3bf6cfbcc078a742cdd</a>.</li>
+    </ol>
+
+    <p class="reference-note">註：英文期刊論文依 Word 檔規定採作者姓氏在前、名字縮寫在後，並列出期刊卷期與頁碼；網路資料補列資料名稱、來源機構、網址及上網日期。以上文獻可支援本研究的續貫堆疊、雙門檻決策、不平衡分類處理，以及葡萄酒品質資料分析。</p>
+  </div>
+</section>
+
+<section id="team" class="reveal subsection">
+  <h3>專題成員</h3><p class="sub">指導教授：李名鏞 教授</p>
+  <div class="team"><span>羅蔚妮</span></div>
+  <p style="margin-top:24px;color:var(--mute);text-align:center;font-size:14px">📅 2026 資科系成果展 ｜ 📍 第一張 ｜ 研究背景與方法設計 ｜ 第二張 ｜ 模型評估、發現與未來工作</p>
+</section>
+
+<footer>
+  <p>BCS-Stacking 研究海報 ｜ 2026 資科系成果展 ｜ 羅蔚妮</p>
+  <p style="margin-top:8px;font-size:12px">Made with ❤️ for academic research</p>
+</footer>
+
+<script>
+// 數據
+const rows=[
+ {n:"方式一：完全自動搜尋 (80%純度)",a:"7層：RF → LGBM → DT → SVM → NB → XGB → ExtraTrees",cov:"90.29%",v:[77.18,69.17,94.26,0.8449,0.8083,0.8787,0.4651]},
+ {n:"方式二：個別門檻設定 (BCS-stacking)",a:"4層：LGBM → SVM → RF → ElasticNet",cov:"45.78%",v:[77.18,74.10,83.75,0.8288,0.8262,0.9034,0.4870]},
+ {n:"方式三：手動門檻設定",a:"9層：GBDT → LGBM → SVM → XGB → Cat → Ada → Tree → Extra → ElasticNet",cov:"65.45%",v:[76.67,70.49,89.87,0.8356,0.8092,0.8909,0.4541]},
+ {n:"邏輯斯堆疊整合法",a:"Logistic Regression 整合",cov:"100%",v:[75.79,72.06,83.75,0.8202,0.8212,0.8999,0.4509]}
+];
+const headers=["Test Acc","Balanced Acc","Recall","F1","ROC-AUC","PR-AUC","MCC"];
+let cur=6;
+
+// 渲染表格
+function renderTable(){
+ const tb=document.querySelector("#tbl tbody");
+ const bestIdx=headers.map((_,i)=>{
+  let mx=-Infinity,b=0;
+  rows.forEach((r,j)=>{if(r.v[i]>mx){mx=r.v[i];b=j}});
+  return b;
+ });
+ tb.innerHTML=rows.map((r,i)=>`<tr>
+  <td><b>${r.n.split("：")[0]}</b><div class="arch">${r.n.split("：")[1]||""}</div></td>
+  <td><div class="arch">${r.a}</div></td>
+  <td>${r.cov}</td>
+  ${r.v.map((v,j)=>`<td class="${bestIdx[j]===i?"best":""}">${j<3?v.toFixed(2)+"%":v.toFixed(4)}</td>`).join("")}
+ </tr>`).join("");
+}
+
+// 渲染長條圖
+function renderBars(){
+ const bars=document.getElementById("bars");
+ const vals=rows.map(r=>r.v[cur]);
+ const mx=Math.max(...vals);
+ bars.innerHTML=rows.map((r,i)=>{
+  const v=r.v[cur];
+  const pct=(v/mx*100).toFixed(1);
+  const isBest=v===mx;
+  const display=cur<3?v.toFixed(2)+"%":v.toFixed(4);
+  return `<div class="row ${isBest?"best":""}">
+   <span>${r.n.split("：")[0]}</span>
+   <div class="track"><div class="fill" style="width:${pct}%"></div></div>
+   <span>${display}</span>
+  </div>`;
+ }).join("");
+ setTimeout(()=>{bars.querySelectorAll(".fill").forEach(el=>el.style.width=el.style.width)},50);
+}
+
+// 渲染 Tabs
+function renderTabs(){
+ const tabs=document.getElementById("tabs");
+ tabs.innerHTML=headers.map((h,i)=>`<button class="${i===cur?"on":""}" data-i="${i}">${h}</button>`).join("");
+ tabs.querySelectorAll("button").forEach(b=>{
+  b.onclick=()=>{cur=+b.dataset.i;renderTabs();renderBars()};
+ });
+}
+
+// 16 模型長條圖
+const models=[
+ {n:"XGBoost",v:0.8157},{n:"LightGBM",v:0.8154},{n:"KNN",v:0.8134},
+ {n:"Random Forest",v:0.8129},{n:"CatBoost",v:0.8117},{n:"Gradient Boosting",v:0.8081},
+ {n:"Extra Trees",v:0.8074},{n:"AdaBoost",v:0.8012},{n:"Linear SVM",v:0.7966},
+ {n:"Logistic Reg",v:0.7921},{n:"L2 Logistic",v:0.7921},{n:"Pruned Tree",v:0.7889},
+ {n:"ElasticNet",v:0.7921},{n:"Decision Tree",v:0.7744},{n:"L1 Logistic",v:0.7921},
+ {n:"Naive Bayes",v:0.7514}
+].sort((a,b)=>b.v-a.v);
+
+function renderModels(){
+ const bars=document.getElementById("modelBars");
+ const mx=Math.max(...models.map(m=>m.v));
+ bars.innerHTML=models.map(m=>{
+  const pct=(m.v/mx*100).toFixed(1);
+  const isTop3=m.v>=0.8134;
+  return `<div class="row ${isTop3?"best":""}">
+   <span>${m.n}</span>
+   <div class="track"><div class="fill" style="width:${pct}%"></div></div>
+   <span>${m.v.toFixed(4)}</span>
+  </div>`;
+ }).join("");
+}
+
+// 統計數字動畫
+function animateStats(){
+ document.querySelectorAll(".stat b[data-n]").forEach(el=>{
+  const target=parseFloat(el.dataset.n);
+  const fixed=parseInt(el.dataset.f)||0;
+  const duration=1500;
+  const start=performance.now();
+  function step(now){
+   const p=Math.min((now-start)/duration,1);
+   const eased=1-Math.pow(1-p,3);
+   el.textContent=(target*eased).toFixed(fixed);
+   if(p<1)requestAnimationFrame(step);
+   else el.textContent=target.toFixed(fixed);
+  }
+  requestAnimationFrame(step);
+ });
+}
+
+// 捲動動畫
+const obs=new IntersectionObserver(entries=>{
+ entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add("show")});
+},{threshold:0.15});
+document.querySelectorAll(".reveal").forEach(el=>obs.observe(el));
+
+// 初始化
+renderTable();renderTabs();renderBars();renderModels();
+setTimeout(animateStats,300);
+</script>
+</body>
+</html>
