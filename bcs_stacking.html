@@ -99,7 +99,6 @@ section.subsection>.sub{margin-bottom:18px}
 </ul></div></nav>
 
 <header class="hero">
-  <span class="tag">2026 資科系成果展 POSTER SESSION</span>
   <h1>平衡兩分類資料之續貫（垂直）堆疊整合學習演算法</h1>
   <div class="en">BCS-Stacking: Vertical Sequential Stacking for Balanced Binary Classification</div>
   <p>指導教授：李名鏞 教授</p>
@@ -115,17 +114,17 @@ section.subsection>.sub{margin-bottom:18px}
 <section id="abstract" class="reveal">
   <h2><span>01</span> 首頁</h2><p class="sub">研究核心概念與整體方向</p>
   <div class="grid">
-    <div class="card"><h3>📋 研究內容</h3><p>本研究提出一種新型態的垂直堆疊整合學習框架，針對平衡二分類資料，透過雙門檻機制（θ₁, θ₂）將樣本劃分為確定區與難分類區（Λ），並結合多層順序堆疊策略，有效提升分類準確率與模型穩定性。</p></div>
-    <div class="card"><h3>✨ 核心貢獻</h3><ul><li>提出<b>雙門檻決策機制</b></li><li>整合 <b>16 種基礎模型</b></li><li>發展 <b>4 種堆疊策略</b></li><li>在多項指標上超越傳統方法</li></ul></div>
+    <div class="card"><h3>研究內容</h3><p>本研究提出一種新型態的垂直堆疊整合學習框架，針對平衡二分類資料，透過雙門檻機制（θ₁, θ₂）將樣本劃分為確定區與難分類區（Λ），並結合多層順序堆疊策略，有效提升分類準確率與模型穩定性。</p></div>
+    <div class="card"><h3>核心貢獻</h3><ul><li>提出<b>雙門檻決策機制</b></li><li>整合 <b>16 種基礎模型</b></li><li>發展 <b>4 種堆疊策略</b></li><li>在多項指標上超越傳統方法</li></ul></div>
   </div>
 </section>
 
 <section id="motivation" class="reveal subsection">
   <h3>研究動機</h3><p class="sub">傳統堆疊方法的三大限制</p>
   <div class="grid">
-    <div class="card"><h3>⚠️ 機率加權的模糊性</h3><p>水平堆疊忽略模型在不同樣本上的確定性差異</p></div>
-    <div class="card"><h3>⚠️ 缺乏順序性</h3><p>未考慮基礎模型的強弱順序與互補關係</p></div>
-    <div class="card"><h3>⚠️ 難分類樣本處理不足</h3><p>對邊界樣本缺乏針對性策略</p></div>
+    <div class="card"><h3>機率加權的模糊性</h3><p>水平堆疊忽略模型在不同樣本上的確定性差異</p></div>
+    <div class="card"><h3>缺乏順序性</h3><p>未考慮基礎模型的強弱順序與互補關係</p></div>
+    <div class="card"><h3>難分類樣本處理不足</h3><p>對邊界樣本缺乏針對性策略</p></div>
   </div>
   <p style="margin-top:20px;color:var(--mute);text-align:center">本研究旨在發展一套能動態識別難分類樣本，並依序調用不同模型專精處理的整合框架。</p>
 </section>
@@ -133,7 +132,7 @@ section.subsection>.sub{margin-bottom:18px}
 <section id="data" class="reveal">
   <h2><span>02</span> 數據與流程</h2><p class="sub">UCI White Wine Quality Dataset</p>
   <div class="grid">
-    <div class="card"><h3>📦 資料概況</h3>
+    <div class="card"><h3>資料概況</h3>
       <ul>
         <li>樣本數：<b style="color:var(--acc)">4,898</b> 筆</li>
         <li>特徵數：<b style="color:var(--acc)">11</b> 項理化指標</li>
@@ -145,7 +144,7 @@ section.subsection>.sub{margin-bottom:18px}
         </li>
       </ul>
     </div>
-    <div class="card"><h3>🧪 特徵欄位</h3>
+    <div class="card"><h3>特徵欄位</h3>
       <p>
         <span class="tag2">固定酸度</span><span class="tag2">揮發性酸度</span><span class="tag2">檸檬酸</span><span class="tag2">殘糖量</span><span class="tag2">氯化物</span><span class="tag2">游離二氧化硫</span><span class="tag2">總二氧化硫</span><span class="tag2">密度</span><span class="tag2">酸鹼值</span><span class="tag2">硝酸鹽</span><span class="tag2">酒精濃度</span>
       </p>
@@ -164,7 +163,7 @@ section.subsection>.sub{margin-bottom:18px}
         <li><b>其他</b>：KNN, Naive Bayes</li>
       </ul>
     </div>
-    <div class="card"><h3>📊 4 種堆疊策略</h3>
+    <div class="card"><h3>4 種堆疊策略</h3>
       <ol style="padding-left:20px">
         <li>完全自動搜索（80% 純度門檻）</li>
         <li>個別模型設定純度</li>
@@ -233,7 +232,7 @@ section.subsection>.sub{margin-bottom:18px}
   <h3>16 種基礎模型</h3><p class="sub">ROC-AUC 表現比較</p>
   <div class="grid">
     <div class="card">
-      <h3>🏆 Top 3 模型</h3>
+      <h3>Top 3 模型</h3>
       <ul>
         <li><b>XGBoost</b>: ROC-AUC <span style="color:var(--acc);font-weight:700">0.8157</span></li>
         <li><b>LightGBM</b>: ROC-AUC <span style="color:var(--acc);font-weight:700">0.8154</span></li>
@@ -242,7 +241,7 @@ section.subsection>.sub{margin-bottom:18px}
       <p class="note">其他表現佳：Random Forest (0.8129)、CatBoost (0.8117)、Gradient Boosting (0.8081)</p>
     </div>
     <div class="card">
-      <h3>📊 16 模型完整排名</h3>
+      <h3>16 模型完整排名</h3>
       <div class="bars" id="modelBars"></div>
     </div>
   </div>
@@ -257,7 +256,7 @@ section.subsection>.sub{margin-bottom:18px}
   <div class="tabs" id="tabs"></div>
   <div class="card bars" id="bars"></div>
 
-  <div class="card insight" style="margin-top:18px"><h3>📌 觀察重點</h3>
+  <div class="card insight" style="margin-top:18px"><h3>觀察重點</h3>
     <ul>
       <li><b>方式二（個別門檻）</b>在 Balanced Accuracy、ROC-AUC、PR-AUC、MCC 四項最佳。</li>
       <li><b>方式一（80% 純度）</b>Recall 高達 94.26%，適合重視不漏判的情境。</li>
@@ -270,19 +269,19 @@ section.subsection>.sub{margin-bottom:18px}
   <h3>關鍵發現</h3><p class="sub">四大核心貢獻</p>
   <div class="grid">
     <div class="card">
-      <h3>💡 1. 雙門檻機制有效性</h3>
+      <h3>1. 雙門檻機制有效性</h3>
       <p>能成功識別 <b style="color:var(--acc)">9.71%–54.22%</b> 的難分類樣本，並針對性處理。</p>
     </div>
     <div class="card">
-      <h3>💡 2. 順序堆疊優勢</h3>
+      <h3>2. 順序堆疊優勢</h3>
       <p>方式二 MCC 達 <b style="color:var(--acc)">0.4870</b>，較最佳單模型（LightGBM 0.4806）提升 <b style="color:var(--acc)">1.33%</b>。</p>
     </div>
     <div class="card">
-      <h3>💡 3. 覆蓋率與效能權衡</h3>
+      <h3>3. 覆蓋率與效能權衡</h3>
       <p>方式二覆蓋率僅 <b style="color:var(--acc)">45.78%</b>，但準確率最高，顯示「少而精」策略有效。</p>
     </div>
     <div class="card">
-      <h3>💡 4. 邏輯斯回歸穩定性</h3>
+      <h3>4. 邏輯斯回歸穩定性</h3>
       <p>雖 MCC 略低，但 <b style="color:var(--acc)">100% 覆蓋率</b>確保所有樣本皆被分類，適合實務應用。</p>
     </div>
   </div>
@@ -299,7 +298,7 @@ section.subsection>.sub{margin-bottom:18px}
         <li>在多項指標上超越單一最佳模型</li>
       </ul>
     </div>
-    <div class="card"><h3>🚀 未來方向</h3>
+    <div class="card"><h3>未來方向</h3>
       <ul>
         <li>多類別分類擴展</li>
         <li>高度不平衡資料處理（SMOTE 整合）</li>
@@ -342,7 +341,7 @@ section.subsection>.sub{margin-bottom:18px}
 
 <footer>
   <p>BCS-Stacking 研究海報 ｜ 2026 資科系成果展 ｜ 羅蔚妮</p>
-  <p style="margin-top:8px;font-size:12px">Made with ❤️ for academic research</p>
+  <p style="margin-top:8px;font-size:12px">Made with for academic research</p>
 </footer>
 
 <script>
